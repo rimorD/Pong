@@ -5,7 +5,7 @@ using UnityEngine;
 public class Pelota : MonoBehaviour
 {
     Marcador marcador;
-    Vector3 direction;
+    Vector2 direction;
     float speed = 1;
     // Start is called before the first frame update
     void Start()
@@ -20,25 +20,26 @@ public class Pelota : MonoBehaviour
         transform.Translate(direction * speed);
     }
 
-    private void OnTriggerEnter(Collider other)
+    private void OnCollisionEnter2D(Collision2D coll)
     {
-        switch (other.gameObject.tag)
+        if (coll.collider.CompareTag("Player"))
         {
-            case "ScreenBorder":
-                direction.y *= -1;
-                break;
-            case "LeftGoal":
-                marcador.RightPlayerGoal();
-                ResetBall();
-                break;
-            case "RightGoal":
-                marcador.LeftPlayerGoal();
-                ResetBall();
-                break;
-            case "Raqueta":
-                direction.x *= -1;
-                speed += 0.05f;
-                break;
+            direction.x *= -1;
+            speed += 0.01f;
+        }
+        else if (coll.collider.CompareTag("LeftGoal"))
+        {
+            marcador.RightPlayerGoal();
+            ResetBall();
+        }
+        else if (coll.collider.CompareTag("RightGoal"))
+        {
+            marcador.LeftPlayerGoal();
+            ResetBall();
+        }
+        else if (coll.collider.CompareTag("ScreenBorder"))
+        {
+            direction.y *= -1;
         }
     }
 
@@ -46,6 +47,6 @@ public class Pelota : MonoBehaviour
     {
         transform.position = new Vector3(0, 0, 0);
         speed = 0.05f;
-        direction = new Vector3(Random.Range(-0.5f, 0.5f), Random.Range(-0.5f, 0.5f), 0);
+        direction = new Vector2(Random.Range(-0.5f, 0.5f), Random.Range(-0.5f, 0.5f));
     }
 }
