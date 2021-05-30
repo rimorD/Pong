@@ -7,7 +7,7 @@ TagManager:
   - ScreenBorder
   - LeftGoal
   - RightGoal
-  - Raqueta
+  - Pelota
   layers:
   - Default
   - TransparentFX
