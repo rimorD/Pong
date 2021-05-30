@@ -7,11 +7,18 @@ public class Pelota : MonoBehaviour
     Marcador marcador;
     Vector2 direction;
     float speed = 1;
+
+    // Audio
+    AudioSource soundEffects;
+    public AudioClip goal;
+    public AudioClip hit;
+
     // Start is called before the first frame update
     void Start()
     {
+        soundEffects = GameObject.FindObjectOfType<AudioSource>();
         marcador = GameObject.FindObjectOfType<Marcador>();
-        ResetBall();
+        Invoke("ResetBall", 2);
     }
 
     // Update is called once per frame
@@ -26,16 +33,23 @@ public class Pelota : MonoBehaviour
         {
             direction.x *= -1;
             speed += 0.01f;
+            soundEffects.PlayOneShot(hit);
         }
         else if (coll.collider.CompareTag("LeftGoal"))
         {
             marcador.RightPlayerGoal();
-            ResetBall();
+            // Hide ball so we dont see it bouncing endlessly with the back wall
+            gameObject.GetComponent<Renderer>().enabled = false;
+            Invoke("ResetBall", 1);
+            soundEffects.PlayOneShot(goal);
         }
         else if (coll.collider.CompareTag("RightGoal"))
         {
             marcador.LeftPlayerGoal();
-            ResetBall();
+            // Hide ball so we dont see it bouncing endlessly with the back wall
+            gameObject.GetComponent<Renderer>().enabled = false;
+            Invoke("ResetBall", 1);
+            soundEffects.PlayOneShot(goal);
         }
         else if (coll.collider.CompareTag("ScreenBorder"))
         {
@@ -45,6 +59,7 @@ public class Pelota : MonoBehaviour
 
     private void ResetBall()
     {
+        gameObject.GetComponent<Renderer>().enabled = true;
         transform.position = new Vector3(0, 0, 0);
         speed = 0.05f;
         direction = new Vector2(Random.Range(-0.5f, 0.5f), Random.Range(-0.5f, 0.5f));
